@@ -39,3 +39,5 @@ create table productosCestas (
 		foreign key (idCesta)
         references cestas(idCesta)
 );
+
+select * from productos;
