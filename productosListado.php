@@ -9,6 +9,14 @@
 </head>
 <body>
     <?php
+        session_start();
+        if (isset($_SESSION["usuario"])){
+            $usuario = $_SESSION["usuario"];
+        } else{
+            $_SESSION["usuario"] = "invitado";
+            $usuario = $_SESSION["usuario"];
+        }
+
         $sql = "SELECT * FROM productos";
         $resultado = $conexion -> query($sql);
         $productos = [];

@@ -41,3 +41,5 @@ create table productosCestas (
 );
 
 select * from productos;
+select * from usuarios;
+select * from cestas;
