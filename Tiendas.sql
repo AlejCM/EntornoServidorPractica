@@ -43,3 +43,11 @@ create table productosCestas (
 select * from productos;
 select * from usuarios;
 select * from cestas;
+
+delete from productos;
+
+alter table productos 
+	add column imagen varchar(100) not null;
+
+alter table productos 
+	modify imagen varchar(100) not null;

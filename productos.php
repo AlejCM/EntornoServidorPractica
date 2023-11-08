@@ -15,6 +15,7 @@
         $temp_precio = depurar($_POST["precio"]);
         $temp_descripcion = depurar($_POST["descripcion"]);
         $temp_cantidad = depurar($_POST["cantidad"]);
+        $nombre_fichero = $_FILES["imagen"]["name"];
         
         if (strlen($temp_nombre) == 0){
             $err_nombre = "Campo Incompleto";
@@ -57,11 +58,29 @@
                 $cantidad = $temp_cantidad;
             }
         }
+
+        if (strlen($nombre_fichero) == 0){
+            $err_imagen = "Campo Incompleto";
+        } else{
+            $formato = $_FILES["imagen"]["type"];
+            if ($formato != "image/jpg" && $formato != "image/jpeg" && $formato != "image/png"){
+                $err_imagen = "Campo Incorrecto, tiene que ser una imagen";
+            } else{
+                $size = $_FILES["imagen"]["size"];
+                if ($size > 5242880){
+                    $err_imagen = "Tamaño demasiado grande";
+                } else{
+                    $ruta = "Imagenes/".$nombre_fichero;
+                    $ruta_temporal = $_FILES["imagen"]["tmp_name"];
+                    move_uploaded_file($ruta_temporal, $ruta);
+                }
+            }
+        }
     }
     ?>
     <div class="container">
         <h1>Nuevo Producto</h1>
-        <form action="" method="post">
+        <form action="" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label class="form-label">Nombre</label>
                 <input class="form-control" type="text" name="nombre">
@@ -82,19 +101,24 @@
                 <input class="form-control" type="text" name="cantidad">
                 <?php if(isset($err_cantidad)) echo $err_cantidad ?>
             </div>
+            <div class="mb-3">
+                <label class="form-label">Imagen</label>
+                <input class="form-control" type="file" name="imagen">
+                <?php if(isset($err_imagen)) echo $err_imagen ?>
+            </div>
             <input class="btn btn-primary" type="submit" value="Enviar">
         </form>
 
         <?php 
-            if(isset($nombre) && isset($precio) && isset($descripcion) && isset($cantidad)){
+            if(isset($nombre) && isset($precio) && isset($descripcion) && isset($cantidad) && isset($ruta)){
             echo "<h2>$nombre</h2>";
             echo "<h2>$precio</h2> ";
             echo "<h2>$cantidad</h2>";
             echo "<p>$descripcion</p>";
+            echo "<p>$ruta</p>";
             
-
-            $sql = "INSERT INTO productos (nombreProducto, precio, descripcion, cantidad)
-                VALUES ('$nombre', '$precio', '$descripcion', '$cantidad')";
+            $sql = "INSERT INTO productos (nombreProducto, precio, descripcion, cantidad, imagen)
+                VALUES ('$nombre', '$precio', '$descripcion', '$cantidad', '$ruta')";
             
             $conexion -> query($sql);
         } 
