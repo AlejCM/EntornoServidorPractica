@@ -51,3 +51,9 @@ alter table productos
 
 alter table productos 
 	modify imagen varchar(100) not null;
+    
+alter table usuarios 
+	add rol varchar(10) default 'cliente';
+
+/* Cambiar el rol del usuario */
+update usuarios set rol = 'admin' where usuario = 'AleCM';
