@@ -111,17 +111,17 @@
 
         <?php 
             if(isset($nombre) && isset($precio) && isset($descripcion) && isset($cantidad) && isset($ruta)){
-            echo "<h2>$nombre</h2>";
-            echo "<h2>$precio</h2> ";
-            echo "<h2>$cantidad</h2>";
-            echo "<p>$descripcion</p>";
-            echo "<p>$ruta</p>";
-            
-            $sql = "INSERT INTO productos (nombreProducto, precio, descripcion, cantidad, imagen)
-                VALUES ('$nombre', '$precio', '$descripcion', '$cantidad', '$ruta')";
-            
-            $conexion -> query($sql);
-        } 
+                echo "<h2>$nombre</h2>";
+                echo "<h2>$precio</h2> ";
+                echo "<h2>$cantidad</h2>";
+                echo "<p>$descripcion</p>";
+                echo "<p>$ruta</p>";
+                
+                $sql = "INSERT INTO productos (nombreProducto, precio, descripcion, cantidad, imagen)
+                    VALUES ('$nombre', '$precio', '$descripcion', '$cantidad', '$ruta')";
+                
+                $conexion -> query($sql);
+            } 
         ?>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
