@@ -16,7 +16,7 @@
 <body>
     <?php
         session_start();
-        if (isset($_SESSION["usuario"])){
+        if (isset($_SESSION["usuario"]) && $_SESSION["usuario"]!= "invitado"){
             $usuario = $_SESSION["usuario"];
 
             $consulta = "SELECT rol FROM usuarios WHERE usuario='$usuario'";
@@ -31,11 +31,13 @@
             $cesta = $filaCesta["idCesta"];
             $_SESSION["idCesta"] = $cesta;
             
-            echo $rol;
+            
         } else{
             $_SESSION["usuario"] = "invitado";
             $usuario = $_SESSION["usuario"];
         }
+
+        echo "<h1>Bienvenido " . $usuario . "</h1>";
 
         $sql = "SELECT * FROM productos";
         $resultado = $conexion -> query($sql);
@@ -139,8 +141,14 @@
         } 
 
     ?>
+    <!-- Si es invitado que sea inicio de sesion el boton pero que haga cerrar sesion -->
     <a href="Funciones/cerrarSesion.php">Cerrar Sesion</a>
+
+    <!-- Ir a cesta solo si rol admin o cliente -->
     <a href="cesta.php">Ir a cesta</a>
+
+    <!-- Ir a cesta solo si rol admin -->
+    <a href="productos.php">Añadir Producto</a>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>

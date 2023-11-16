@@ -10,6 +10,14 @@
 </head>
 <body>
     <?php
+    session_start();
+    if (isset($_SESSION["rol"]) && $_SESSION["rol"] == "admin"){
+        $usuario = $_SESSION["usuario"];
+        $rol = $_SESSION["rol"];
+    } else{
+        header('location: productosListado.php');
+    }
+
     if ($_SERVER["REQUEST_METHOD"] == "POST"){
         $temp_nombre = depurar($_POST["nombre"]);
         $temp_precio = depurar($_POST["precio"]);
@@ -124,6 +132,8 @@
             } 
         ?>
     </div>
+    <a href="Funciones/cerrarSesion.php">Cerrar Sesion</a>
+    <a href="productosListado.php">Ver Lista de Productos</a>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>

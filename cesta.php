@@ -11,17 +11,22 @@
 <body>
     <?php
         session_start();
-        if (isset($_SESSION["usuario"])){
+        if (isset($_SESSION["usuario"]) && $_SESSION["usuario"]!= "invitado"){
             $usuario = $_SESSION["usuario"];
             $rol = $_SESSION["rol"];
             $cesta = $_SESSION["idCesta"];
             
         } else{
             $_SESSION["usuario"] = "invitado";
-            $usuario = $_SESSION["usuario"];
+            header('location: productosListado.php');
         }
 
-        $sql = "SELECT * FROM productos WHERE idProducto = (SELECT idProducto FROM productosCestas WHERE idCesta = '$cesta')";
+        $sql = "SELECT p.idProducto, p.nombreProducto, p.precio, p.descripcion, pc.cantidad, p.imagen
+            FROM productos p
+            JOIN productosCestas pc
+            ON p.idProducto = pc.idProducto
+            WHERE pc.idCesta = '$cesta'";
+        
         $resultado = $conexion -> query($sql);
         $productos = [];
 
@@ -30,11 +35,7 @@
             $nombreProducto = $prod["nombreProducto"];
             $precio = $prod["precio"];
             $descripcion = $prod["descripcion"];
-            $sqlCantidad = "SELECT cantidad FROM productosCestas 
-                WHERE idProducto = '$id_producto' AND idCesta = '$cesta'";
-            $resultadoCantidad = $conexion -> query($sqlCantidad);
-            $cantidadCesta = $resultadoCantidad->fetch_assoc();
-            $cantidad = $cantidadCesta["cantidad"];
+            $cantidad = $prod["cantidad"];
             $imagen = $prod["imagen"];
 
             $nuevo_producto = new Producto($id_producto, $nombreProducto, $precio, $descripcion, $cantidad, $imagen);
@@ -45,10 +46,20 @@
             $idProducto = $_POST["idProducto"];
             $unidad_temp = $_POST["unidad"];
             $unidadesPermitidas = ['1', '2', '3', '4', '5'];
-            if (isset($unidad_temp) && in_array($unidad_temp, $unidadesPermitidas)){
-                $unidad = $unidad_temp;
-            } else{
+            if (!isset($unidad_temp) || !in_array($unidad_temp, $unidadesPermitidas)){
                 $err_unidad = "No hay nada gratis por aqui";
+            } else{
+                $compruebaCantidad = "SELECT cantidad FROM productosCestas 
+                    WHERE idProducto = '$idProducto' AND idCesta = '$cesta'";
+                $cantidadCesta = $conexion->query($compruebaCantidad);
+                $fila = $cantidadCesta->fetch_assoc();
+                $cantidadUnidades = $fila["cantidad"];
+
+                if ($cantidadUnidades < $unidad_temp){
+                    $err_unidad = "No tienes tantas unidades en la cesta";
+                }else{
+                    $unidad = $unidad_temp;
+                }
             }
         }
     ?>
@@ -87,7 +98,6 @@
                                 <option value="5">5</option>
                             </select>
                             <input class="btn btn-primary" type="submit" value="Quitar de Cesta">
-                            <?php if(isset($err_unidad)) echo $err_unidad ?>
                         </form>
                     </td>
                     <?php
@@ -96,36 +106,30 @@
             ?>
         </tbody>
     </table>
+    <?php if(isset($err_unidad)) echo $err_unidad ?>
     <?php
-
-                //REVISAR Y ARREGLAR
-
         if(isset($unidad)){
             echo "<h2>cantidad $unidad</h2>";
             echo "<h2>producto $idProducto</h2>";
             echo "<h2>cesta $cesta</h2>";
 
-            $compruebaExiste = "SELECT cantidad FROM productosCestas 
-                WHERE idProducto = '$idProducto' AND idCesta = '$cesta'";
-            $resultadoExiste = $conexion->query($compruebaExiste);
-
-            if ($resultadoExiste->num_rows > 0){
-                $filaExiste = $resultadoExiste->fetch_assoc();
-                $unidadesAntiguas = $filaExiste["cantidad"];
-                $unidadesNuevas = $unidadesAntiguas - $unidad;
-                $sql = "UPDATE productosCestas SET cantidad = '$unidadesNuevas' 
+            $unidadesNuevas = $cantidadUnidades - $unidad;
+            //Hemos comprobado antes que no pueda ser negativo haciendo que no se pueda
+            //coger una cantidad de unidades a restar mayor a la cantidad total
+            if ($unidadesNuevas == 0){
+                $sql = "DELETE FROM productosCestas 
                     WHERE idProducto = '$idProducto' AND idCesta = '$cesta'";
             } else{
-                $sql = "INSERT INTO productosCestas (idProducto, idCesta, cantidad)
-                    VALUES ('$idProducto', '$cesta', '$unidad')";
+                $sql = "UPDATE productosCestas SET cantidad = '$unidadesNuevas' 
+                    WHERE idProducto = '$idProducto' AND idCesta = '$cesta'";
             }
-
             $conexion -> query($sql);
+            header('location: cesta.php');
         } 
     ?>
 
     <a href="Funciones/cerrarSesion.php">Cerrar Sesion</a>
-    <a href="cesta.php">Ir a cesta</a>
+    <a href="productosListado.php">Seguir Comprando</a>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
