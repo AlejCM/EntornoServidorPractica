@@ -7,6 +7,11 @@
     <?php require 'Funciones/util.php' ?>
     <?php require 'Funciones/db_tiendas.php' ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        a{
+            margin-top: 15px;
+        }
+    </style>
 </head>
 <body>
     <?php
@@ -28,10 +33,20 @@
         if (strlen($temp_contrasena) == 0){
             $err_contrasena = "Campo Incompleto";
         } else{
-            if (strlen($temp_contrasena) > 255){
+            if (strlen($temp_contrasena) > 20){
                 $err_contrasena = "La contraseña es muy larga";
             } else{
-                $contrasena = $temp_contrasena;
+                if (strlen($temp_contrasena) < 8){
+                    $err_contrasena = "La contraseña es muy corta";
+                } else{
+                    $regex = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,20}$/"; 
+                    if (!preg_match($regex, $temp_contrasena)){
+                        $err_contrasena = "La contraseña debe tener al menos una mayuscula, una minuscula, 
+                        un numero y un caracter especial";
+                    } else{
+                        $contrasena = $temp_contrasena;
+                    }
+                }
             }
         }
 
@@ -74,29 +89,26 @@
                 <input class="form-control" type="date" name="fecha_nacimiento">
                 <?php if(isset($err_nacimiento)) echo $err_nacimiento ?>
             </div>
-            <input class="btn btn-primary" type="submit" value="Enviar">
+            <input class="btn btn-primary" type="submit" value="Crear Usuario">
         </form>
         <?php 
-            if(isset($usuario) && isset($contrasena) && isset($f_nacimiento)){
-            echo "<h2>$usuario</h2>";
-            echo "<h2>$contrasena</h2> ";
-            echo "<h2>$f_nacimiento</h2>";
+        if(isset($usuario) && isset($contrasena) && isset($f_nacimiento)){
 
             $contrasena_cifrada = password_hash($contrasena, PASSWORD_DEFAULT);
 
             $sql = "INSERT INTO usuarios (usuario, contrasena, fechaNacimiento)
                 VALUES ('$usuario', '$contrasena_cifrada', '$f_nacimiento')";
-            
             $conexion -> query($sql);
+
             $sql = "INSERT INTO cestas (usuario, precioTotal)
                 VALUES ('$usuario', 0)";
-            
             $conexion -> query($sql);
+
             header('location: inicioSesion.php');
         } 
         ?>
+        <a class="btn btn-primary" href="Funciones/cerrarSesion.php">Inicio de Sesion</a>
     </div>
-    <a href="Funciones/cerrarSesion.php">Inicio de Sesion</a>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>

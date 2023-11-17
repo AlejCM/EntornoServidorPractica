@@ -40,12 +40,36 @@ create table productosCestas (
         references cestas(idCesta)
 );
 
+create table pedidos (
+	idPedido int primary key auto_increment,
+    usuario varchar(12),
+    precioTotal numeric(7,2) not null,
+    fechaPedido datetime not null default (CURRENT_DATE),
+    constraint fk_pedidos_usuarios
+		foreign key (usuario)
+        references usuarios(usuario)
+);
+
+create table lineasPedidos (
+	lineaPedido numeric(2) not null,
+    idProducto int,
+	idPedido int,
+    precioUnitario numeric(7,2) not null,
+    cantidad numeric(5) not null,
+    constraint fk_lineasPedidos_productos
+		foreign key (idProducto)
+        references productos(idProducto),
+	constraint fk_lineasPedidos_pedidos
+		foreign key (idPedido)
+        references pedidos(idPedido)
+);
+
 select * from productos;
 select * from usuarios;
 select * from cestas;
 select * from productosCestas;
-
-delete from productos;
+select * from pedidos;
+select * from lineasPedidos;
 
 alter table productos 
 	add column imagen varchar(100) not null;
@@ -58,3 +82,6 @@ alter table usuarios
 
 /* Cambiar el rol del usuario */
 update usuarios set rol = 'admin' where usuario = 'AleCM';
+
+
+delete from productos;

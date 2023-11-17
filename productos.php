@@ -7,6 +7,11 @@
     <?php require 'Funciones/util.php' ?>
     <?php require 'Funciones/db_tiendas.php' ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        a{
+            margin-top: 15px;
+        }
+    </style>
 </head>
 <body>
     <?php
@@ -119,21 +124,18 @@
 
         <?php 
             if(isset($nombre) && isset($precio) && isset($descripcion) && isset($cantidad) && isset($ruta)){
-                echo "<h2>$nombre</h2>";
-                echo "<h2>$precio</h2> ";
-                echo "<h2>$cantidad</h2>";
-                echo "<p>$descripcion</p>";
-                echo "<p>$ruta</p>";
+                echo "<h2>$nombre añadido con exito</h2>";
                 
                 $sql = "INSERT INTO productos (nombreProducto, precio, descripcion, cantidad, imagen)
                     VALUES ('$nombre', '$precio', '$descripcion', '$cantidad', '$ruta')";
-                
                 $conexion -> query($sql);
             } 
         ?>
+
+        <a class="btn btn-primary" href="Funciones/cerrarSesion.php">Cerrar Sesion</a><br>
+        <a class="btn btn-primary" href="productosListado.php">Ver Lista de Productos</a>
     </div>
-    <a href="Funciones/cerrarSesion.php">Cerrar Sesion</a>
-    <a href="productosListado.php">Ver Lista de Productos</a>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>

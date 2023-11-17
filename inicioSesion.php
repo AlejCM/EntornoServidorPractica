@@ -6,9 +6,13 @@
     <title>Inicio Sesion</title>
     <?php require 'Funciones/db_tiendas.php' ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        a{
+            margin-top: 15px;
+        }
+    </style>
 </head>
 <body>
-    
     <div class="container">
         <h1>Inicio de Sesion</h1>
         <form action="" method="post">
@@ -47,14 +51,16 @@
                     header('location: productosListado.php');
         
                 }else{
-                    echo "<h2>La Contraseña es Incorrecta</h2>";
+                    echo "<h2>El usuario o la Contraseña es Incorrecta</h2>";
                 }
             }
         }
         ?>
+        <!-- Deja crear usuario -->
+        <a class="btn btn-primary" href="usuario.php">Crear Usuario</a><br>
+        <!-- Deja entrar como invitado -->
+        <a class="btn btn-primary" href="productosListado.php">Entrar como invitado</a>
     </div>
-    <!-- Deja crear usuario -->
-    <a href="usuario.php">Crear Usuario</a>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -7,6 +7,15 @@
     <?php require 'Funciones/db_tiendas.php' ?>
     <?php require 'Objetos/Producto.php' ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        .enlaces, caption, th, td{
+            text-align: center;
+        }
+        .table{
+            width: 70%;
+            margin: auto;
+        }
+    </style>
 </head>
 <body>
     <?php
@@ -63,6 +72,10 @@
             }
         }
     ?>
+    <div class="enlaces">
+        <a class="btn btn-primary" href="Funciones/cerrarSesion.php">Cerrar Sesion</a>
+        <a class="btn btn-primary" href="productosListado.php">Seguir Comprando</a>
+    </div>
     <table  class="table table-secondary table-hover table-striped">
         <caption class="table caption-top"><h1>Cesta de <?php echo $usuario ?></h1></caption>
         <thead>
@@ -105,14 +118,16 @@
                 }
             ?>
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan = "7">Precio Total: </td>
+            </tr>
+        </tfoot>
     </table>
     <?php if(isset($err_unidad)) echo $err_unidad ?>
+    <br>
     <?php
         if(isset($unidad)){
-            echo "<h2>cantidad $unidad</h2>";
-            echo "<h2>producto $idProducto</h2>";
-            echo "<h2>cesta $cesta</h2>";
-
             $unidadesNuevas = $cantidadUnidades - $unidad;
             //Hemos comprobado antes que no pueda ser negativo haciendo que no se pueda
             //coger una cantidad de unidades a restar mayor a la cantidad total
@@ -124,12 +139,22 @@
                     WHERE idProducto = '$idProducto' AND idCesta = '$cesta'";
             }
             $conexion -> query($sql);
-            header('location: cesta.php');
+
+            $compruebaStock = "SELECT cantidad FROM productos 
+                WHERE idProducto = '$idProducto'";
+            $cantidadDisponible = $conexion->query($compruebaStock);
+            $fila = $cantidadDisponible->fetch_assoc();
+            $cantidadStock = $fila["cantidad"];
+            $nuevoStock = $cantidadStock + $unidad;
+
+            $sql = "UPDATE productos SET cantidad = '$nuevoStock' 
+                WHERE idProducto = '$idProducto'";
+            $conexion -> query($sql);
+            ?>
+            <script>window.location.href = "cesta.php";</script>
+            <?php
         } 
     ?>
-
-    <a href="Funciones/cerrarSesion.php">Cerrar Sesion</a>
-    <a href="productosListado.php">Seguir Comprando</a>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
