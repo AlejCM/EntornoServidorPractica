@@ -56,10 +56,6 @@
             array_push($productos, $nuevo_producto);
         }
 
-
-
-        //AÑADIR GET PARA HACEER VARIOS FORMS PARA PODER AÑADIR CANTIDADES
-
         if ($_SERVER["REQUEST_METHOD"] == "POST"){
             $idProducto = $_POST["idProducto"];
             $unidad_temp = $_POST["unidad"];
@@ -115,9 +111,6 @@
                 <th>Cantidad</th>
                 <th>Descripcion</th>
                 <th>Imagen</th>
-                <?php if(isset($_SESSION["rol"]) && $_SESSION["rol"] == "admin"){
-                    echo "<th>Añadir Productos</th>";
-                }?>
                 <?php if(isset($_SESSION["rol"])){
                     echo "<th>Añadir a Cesta</th>";
                 }?>
@@ -135,24 +128,6 @@
                     ?>
                     <td><img height="70" src="<?php echo $prod -> imagen ?>" alt=""></td>
                     <?php
-                    //Si es admin pone esta columna para añadir producto
-                    if(isset($_SESSION["rol"]) && $_SESSION["rol"] == "admin"){
-                        ?>
-                        <td>
-                            <form action="" method="POST">
-                                <input type="hidden" name="idProducto" value="<?php echo ($prod -> id_producto) ?>">
-                                <select id="unidad" name="unidad">
-                                    <option value="1" selected>1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                </select>
-                                <input class="btn btn-primary" type="submit" value="Añadir Producto">
-                            </form>
-                        </td>
-                        <?php
-                    }
                     //Si tiene cualquier rol puede añadir a cesta
                     if(isset($_SESSION["rol"])){
                         ?>
@@ -199,9 +174,10 @@
             }
             $conexion -> query($sql);
 
+            /* Cambia la cantidad de producto en la lista restando lo que se ha añadido a la cesta
+            Hemos comprobado antes que no pueda ser negativo haciendo que no se pueda
+            coger una cantidad de unidades a restar mayor a la cantidad total */
             $unidadesNuevas = $cantidadUnidades - $unidad;
-            //Hemos comprobado antes que no pueda ser negativo haciendo que no se pueda
-            //coger una cantidad de unidades a restar mayor a la cantidad total
             $sql = "UPDATE productos SET cantidad = '$unidadesNuevas' 
                 WHERE idProducto = '$idProducto'";
             $conexion -> query($sql);

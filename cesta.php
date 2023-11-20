@@ -8,12 +8,16 @@
     <?php require 'Objetos/Producto.php' ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <style>
-        .enlaces, caption, th, td{
+        caption, th, td{
             text-align: center;
         }
         .table{
             width: 70%;
             margin: auto;
+        }
+        .enlaces{
+            text-align: center;
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -121,9 +125,17 @@
         <tfoot>
             <tr>
                 <td colspan = "7">Precio Total: </td>
+
+
+                <!-- Hay que arreglar precio total en cestas en base de datos y ponerlo por aqui
+                     Ponerlo con un update y despues ese usarlo para pedidos -->
             </tr>
         </tfoot>
     </table>
+    <div class="enlaces">
+        <!-- Añadir el formulario para añadir el pedido -->
+        <a class="btn btn-warning" href="Funciones/pedido.php">Hacer Pedido</a>
+    </div>
     <?php if(isset($err_unidad)) echo $err_unidad ?>
     <br>
     <?php
