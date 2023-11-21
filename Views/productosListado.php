@@ -4,18 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProductoListado</title>
-    <?php require 'Funciones/db_tiendas.php' ?>
-    <?php require 'Objetos/Producto.php' ?>
+    <?php require '../Util/db_tiendas.php' ?>
+    <?php require '../Util//Producto.php' ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <style>
-        .enlaces, caption, th, td{
-            text-align: center;
-        }
-        .table{
-            width: 70%;
-            margin: auto;
-        }
-    </style>
+    <link rel="stylesheet" href="Styles/styles.css">
 </head>
 <body>
     <?php
@@ -69,32 +61,36 @@
             }
         }
     ?>
-    <div class="enlaces">
-        <h1>Bienvenido <?php echo $usuario ?></h1>
-        <?php
-            if ($_SESSION["usuario"] == "invitado"){
-                ?>
-                <!-- Si es invitado pone Inicio de Sesion -->
-                <a class="btn btn-primary" href="Funciones/cerrarSesion.php">Iniciar Sesion</a>
-                <?php
-            } else{
-                ?>
-                <!-- Ir a cesta y cerrar sesion para todos los usuarios -->
-                <a class="btn btn-primary" href="Funciones/cerrarSesion.php">Cerrar Sesion</a>
-                <a class="btn btn-primary" href="cesta.php">Ir a cesta</a>
-                <?php
-                if ($_SESSION["rol"] == "admin"){
+    <div class="nav">
+        <div class="titulo">
+            <h1>Bienvenido <?php echo $usuario ?></h1>
+        </div>
+        <div class="enlaces">
+            <?php
+                if ($_SESSION["usuario"] == "invitado"){
                     ?>
-                    <!-- Añadir producto solo si el rol es admin -->
-                    <a class="btn btn-primary" href="productos.php">Añadir Producto</a>
+                    <!-- Si es invitado pone Inicio de Sesion -->
+                    <a class="btn btn-primary" href="../Util/cerrarSesion.php">Iniciar Sesion</a>
+                    <?php
+                } else{
+                    if ($_SESSION["rol"] == "admin"){
+                        ?>
+                        <!-- Añadir producto solo si el rol es admin -->
+                        <a class="btn btn-primary" href="productos.php">Añadir Producto</a>
+                        <?php
+                    }
+                    ?>
+                    <!-- Ir a cesta y cerrar sesion para todos los usuarios -->
+                    <a class="btn btn-primary" href="cesta.php">Ir a cesta</a>
+                    <a class="btn btn-primary" href="../Util/cerrarSesion.php">Cerrar Sesion</a>
                     <?php
                 }
-            }
-        ?>
+            ?>
+        </div>
     </div>
 
     <table  class="table table-secondary table-hover table-striped">
-    <caption class="table caption-top"><h1>Listado Productos</h1></caption>
+        <caption class="table caption-top"><h1>Listado Productos</h1></caption>
         <thead>
             <tr>
                 <th>Id</th>

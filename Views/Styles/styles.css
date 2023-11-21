@@ -1,0 +1,31 @@
+.nav{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background-color: rgb(100, 100, 100, 0.6);
+    align-items: center;
+    height: 90px;
+    margin-bottom: 30px;
+}
+.nav .titulo{
+    text-align: left;
+    margin-left: 15px;
+}
+.nav .enlaces{
+    text-align: right;
+    margin-right: 15px;
+}
+.botones a{
+    margin-top: 15px;
+}
+.botonPedido{
+    margin-top: 15px;
+    text-align: center;
+}
+
+.table{
+    width: 70%;
+    margin: auto;
+}
+caption, th, td{
+    text-align: center;
+}

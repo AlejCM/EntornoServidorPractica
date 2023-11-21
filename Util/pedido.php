@@ -8,7 +8,7 @@
         
     } else{
         $_SESSION["usuario"] = "invitado";
-        header('location: ../productosListado.php');
+        header('location: ../Views/productosListado.php');
     }
 
     /* Coge el precio total */
@@ -62,5 +62,5 @@
         $cont++;
     }
 
-    header('location: ../cesta.php');
+    header('location: ../Views/cesta.php');
 ?>
