@@ -174,6 +174,15 @@
             }
             $conexion -> query($sql);
 
+
+            /* Cambiar el precio total */
+            // $compruebaPrecio = 
+            $precioExtra = $unidad * /* cantidad * precio objeto */
+            $sql = "UPDATE cestas SET precioTotal = precioTotal + '$unidadesNuevas' 
+                WHERE idCesta = '$cesta'";
+            $conexion -> query($sql);
+
+
             /* Cambia la cantidad de producto en la lista restando lo que se ha añadido a la cesta
             Hemos comprobado antes que no pueda ser negativo haciendo que no se pueda
             coger una cantidad de unidades a restar mayor a la cantidad total */
