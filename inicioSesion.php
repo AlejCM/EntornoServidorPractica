@@ -47,6 +47,18 @@
                 if ($acceso_valido) {
                     session_start();
                     $_SESSION["usuario"] = $usuario;
+                    /* Guardo el rol del usuario */
+                    $consulta = "SELECT rol FROM usuarios WHERE usuario='$usuario'";
+                    $resultado = $conexion->query($consulta);
+                    $fila = $resultado->fetch_assoc();
+                    $rol = $fila["rol"];
+                    $_SESSION["rol"] = $rol;
+                    /* Guardo el id de la cesta del usuario */
+                    $consultaCesta = "SELECT idCesta FROM cestas WHERE usuario='$usuario'";
+                    $resultadoCesta = $conexion->query($consultaCesta);
+                    $filaCesta = $resultadoCesta->fetch_assoc();
+                    $cesta = $filaCesta["idCesta"];
+                    $_SESSION["idCesta"] = $cesta;
                     
                     header('location: productosListado.php');
         

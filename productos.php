@@ -80,7 +80,7 @@
                 $err_imagen = "Campo Incorrecto, tiene que ser una imagen";
             } else{
                 $size = $_FILES["imagen"]["size"];
-                if ($size > 5242880){
+                if ($size > 1048576){
                     $err_imagen = "Tamaño demasiado grande";
                 } else{
                     $ruta = "Imagenes/".$nombre_fichero;

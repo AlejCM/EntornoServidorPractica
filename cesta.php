@@ -86,7 +86,7 @@
             <tr>
                 <th>Id</th>
                 <th>Nombre</th>
-                <th>Precio</th>
+                <th>Precio por unidad</th>
                 <th>Cantidad</th>
                 <th>Descripcion</th>
                 <th>Imagen</th>
@@ -99,7 +99,7 @@
                     echo "<tr>";
                     echo "<td>" . $prod -> id_producto . "</td>";
                     echo "<td>" . $prod -> nombreProducto . "</td>";
-                    echo "<td>" . $prod -> precio . "</td>";
+                    echo "<td>" . $prod -> precio . "€</td>";
                     echo "<td>" . $prod -> cantidad . "</td>";
                     echo "<td>" . $prod -> descripcion . "</td>";
                     ?>
@@ -124,11 +124,16 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan = "7">Precio Total: </td>
+                <?php
+                    /* Coge el precio total */
+                    $compruebaPrecio = "SELECT precioTotal FROM cestas
+                    WHERE idCesta = '$cesta'";
+                    $resultadoPrecio = $conexion->query($compruebaPrecio);
+                    $filaPrecio = $resultadoPrecio->fetch_assoc();
+                    $precioTotal = $filaPrecio["precioTotal"];
+                ?>
+                <td colspan = "7">Precio Total: <?php echo $precioTotal ?></td>
 
-
-                <!-- Hay que arreglar precio total en cestas en base de datos y ponerlo por aqui
-                     Ponerlo con un update y despues ese usarlo para pedidos -->
             </tr>
         </tfoot>
     </table>
@@ -140,9 +145,10 @@
     <br>
     <?php
         if(isset($unidad)){
+            /* Cambia las unidades y elimina el producto cuando no quedan
+            Hemos comprobado antes que no puedan ser unidades negativas haciendo que no se pueda
+            coger una cantidad de unidades a restar mayor a la cantidad total */ 
             $unidadesNuevas = $cantidadUnidades - $unidad;
-            //Hemos comprobado antes que no pueda ser negativo haciendo que no se pueda
-            //coger una cantidad de unidades a restar mayor a la cantidad total
             if ($unidadesNuevas == 0){
                 $sql = "DELETE FROM productosCestas 
                     WHERE idProducto = '$idProducto' AND idCesta = '$cesta'";
@@ -152,6 +158,7 @@
             }
             $conexion -> query($sql);
 
+            /* Añade la cantidad de producto en productos cuando quitas algo de la cesta */
             $compruebaStock = "SELECT cantidad FROM productos 
                 WHERE idProducto = '$idProducto'";
             $cantidadDisponible = $conexion->query($compruebaStock);
@@ -162,7 +169,19 @@
             $sql = "UPDATE productos SET cantidad = '$nuevoStock' 
                 WHERE idProducto = '$idProducto'";
             $conexion -> query($sql);
+
+            /* Cambia el precio total */
+            $compruebaPrecio = "SELECT precio FROM productos
+                WHERE idProducto = '$idProducto'";
+            $resultadoPrecio = $conexion->query($compruebaPrecio);
+            $filaPrecio = $resultadoPrecio->fetch_assoc();
+            $precioUnidad = $filaPrecio["precio"];
+            $precioExtra = $unidad * $precioUnidad;
+            $sql = "UPDATE cestas SET precioTotal = precioTotal - '$precioExtra' 
+                WHERE idCesta = '$cesta'";
+            $conexion -> query($sql);
             ?>
+            <!-- Recarga la pagina para evitar problemas con header, lo hago con un script -->
             <script>window.location.href = "cesta.php";</script>
             <?php
         } 

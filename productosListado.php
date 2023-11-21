@@ -22,24 +22,14 @@
         session_start();
         if (isset($_SESSION["usuario"]) && $_SESSION["usuario"]!= "invitado"){
             $usuario = $_SESSION["usuario"];
-
-            $consulta = "SELECT rol FROM usuarios WHERE usuario='$usuario'";
-            $resultado = $conexion->query($consulta);
-            $fila = $resultado->fetch_assoc();
-            $rol = $fila["rol"];
-            $_SESSION["rol"] = $rol;
-
-            $consultaCesta = "SELECT idCesta FROM cestas WHERE usuario='$usuario'";
-            $resultadoCesta = $conexion->query($consultaCesta);
-            $filaCesta = $resultadoCesta->fetch_assoc();
-            $cesta = $filaCesta["idCesta"];
-            $_SESSION["idCesta"] = $cesta;
-            
+            $rol = $_SESSION["rol"];
+            $cesta = $_SESSION["idCesta"];
         } else{
             $_SESSION["usuario"] = "invitado";
             $usuario = $_SESSION["usuario"];
         }
 
+        /* Añade los productos a un array de objetos Producto */
         $sql = "SELECT * FROM productos";
         $resultado = $conexion -> query($sql);
         $productos = [];
@@ -56,10 +46,12 @@
             array_push($productos, $nuevo_producto);
         }
 
+        /* Comprueba las unidades del producto cuando se envia el formulario*/
         if ($_SERVER["REQUEST_METHOD"] == "POST"){
             $idProducto = $_POST["idProducto"];
             $unidad_temp = $_POST["unidad"];
             $unidadesPermitidas = ['1', '2', '3', '4', '5'];
+
             if (!isset($unidad_temp) || !in_array($unidad_temp, $unidadesPermitidas)){
                 $err_unidad = "No hay nada gratis por aqui";
             } else{
@@ -126,7 +118,7 @@
                     echo "<td>" . $prod -> cantidad . "</td>";
                     echo "<td>" . $prod -> descripcion . "</td>";
                     ?>
-                    <td><img height="70" src="<?php echo $prod -> imagen ?>" alt=""></td>
+                    <td><img height="70" src="<?php echo $prod -> imagen ?>" alt="Imagen"></td>
                     <?php
                     //Si tiene cualquier rol puede añadir a cesta
                     if(isset($_SESSION["rol"])){
@@ -141,9 +133,12 @@
                                     <option value="4">4</option>
                                     <option value="5">5</option>
                                 </select>
-                                <input class="btn btn-primary" type="submit" value="Añadir a Cesta" 
+                                <!-- Cambia a Sin Stock cuando no quedan unidades -->
+                                <input class="btn btn-primary" type="submit" value=
                                 <?php if ($prod -> cantidad == 0){
-                                    echo "disabled";
+                                    echo "'Sin Stock' disabled";
+                                } else{
+                                    echo "'Añadir a Cesta'";
                                 } ?>>
                             </form>
                         </td>
@@ -158,6 +153,7 @@
     <br>
     <?php
         if(isset($unidad)){
+            /* Añade productos a productosCestas con la cantidad indicada */
             $compruebaExiste = "SELECT cantidad FROM productosCestas 
                 WHERE idProducto = '$idProducto' AND idCesta = '$cesta'";
             $resultadoExiste = $conexion->query($compruebaExiste);
@@ -175,13 +171,16 @@
             $conexion -> query($sql);
 
 
-            /* Cambiar el precio total */
-            // $compruebaPrecio = 
-            $precioExtra = $unidad * /* cantidad * precio objeto */
-            $sql = "UPDATE cestas SET precioTotal = precioTotal + '$unidadesNuevas' 
+            /* Cambia el precio total */
+            $compruebaPrecio = "SELECT precio FROM productos
+                WHERE idProducto = '$idProducto'";
+            $resultadoPrecio = $conexion->query($compruebaPrecio);
+            $filaPrecio = $resultadoPrecio->fetch_assoc();
+            $precioUnidad = $filaPrecio["precio"];
+            $precioExtra = $unidad * $precioUnidad;
+            $sql = "UPDATE cestas SET precioTotal = precioTotal + '$precioExtra' 
                 WHERE idCesta = '$cesta'";
             $conexion -> query($sql);
-
 
             /* Cambia la cantidad de producto en la lista restando lo que se ha añadido a la cesta
             Hemos comprobado antes que no pueda ser negativo haciendo que no se pueda
@@ -191,10 +190,10 @@
                 WHERE idProducto = '$idProducto'";
             $conexion -> query($sql);
             ?>
+            <!-- Recarga la pagina para evitar problemas con header, lo hago con un script -->
             <script>window.location.href = "productosListado.php";</script>
             <?php
         } 
-
     ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
