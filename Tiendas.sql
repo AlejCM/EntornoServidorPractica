@@ -71,6 +71,13 @@ select * from productosCestas;
 select * from pedidos;
 select * from lineasPedidos;
 
+drop table productos;
+drop table usuarios;
+drop table cestas;
+drop table productosCestas;
+drop table pedidos;
+drop table lineasPedidos;
+
 alter table productos 
 	add column imagen varchar(100) not null;
 
